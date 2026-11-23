@@ -2,3 +2,6 @@
 **/obj/
 **/App_Data/
 __pycache__/
+node_modules/
+capturas/
+servidor.log

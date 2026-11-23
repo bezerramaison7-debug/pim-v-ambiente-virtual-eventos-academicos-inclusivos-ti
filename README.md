@@ -49,4 +49,4 @@ Com o servidor apontado para um arquivo de teste novo, a senha exportada e o Pyt
 - [Relatório e storyboards de Libras](docs/libras.md).
 - [Resultados de validação e responsividade](docs/evidencias/validacao.md).
 
-O evento, os nomes e os materiais de avaliação são demonstrativos. A agenda pode apontar para salas HTTPS externas cadastradas pela comissão. O sistema usa um único processo de aplicação, arquivo local e sessão por cookie. Atendimento, avisos e confirmação de inscrição funcionam dentro do portal. O capítulo 6 do relatório descreve os limites do protótipo.
+O evento, os nomes e os materiais de avaliação são demonstrativos. A agenda pode apontar para salas HTTPS externas cadastradas pela comissão. O sistema usa um único processo de aplicação, arquivo local e sessão por cookie. Atendimento, avisos e confirmação de inscrição funcionam dentro do portal. O capítulo 7 do relatório descreve os limites do protótipo.

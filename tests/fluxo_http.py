@@ -90,6 +90,27 @@ def main():
     codigo = re.search(r"/certificados\?codigo=([A-F0-9]{24})", emissao)[1]
     verificado = get(publico, "/certificados?codigo=" + codigo.lower())
     check(nome in verificado and "5h 0min" in verificado, "Emissão e verificação pública do certificado")
+    atividade = {
+        "titulo": "Laboratorio de inclusao",
+        "tipo": "Oficina",
+        "palestrante": "Equipe de teste",
+        "inicio": "2026-12-06T14:00",
+        "minutos": "45",
+        "descricao": "Exercicio orientado de avaliacoes web.",
+        "acessibilidade": "Material textual previsto",
+        "sala": "https://example.test/sala",
+    }
+    painel = post(gestao, "/gestao/atividade", token(aviso), **atividade)
+    check("Atividade salva." in painel and atividade["sala"] in get(publico, "/programacao"),
+          "Cadastro de atividade com sala")
+    codigo_atividade = re.search(r'editar=([^#]+)#agenda">Laboratorio de inclusao', painel)[1]
+    alterada = {**atividade, "id": codigo_atividade, "inicio": "2026-12-06T15:20"}
+    painel = post(gestao, "/gestao/atividade", token(painel), **alterada)
+    check("15:20" in get(publico, "/programacao") and "Atividade salva." in painel, "Edicao do horario")
+    painel = post(gestao, "/gestao/atividade", token(painel), **{**alterada, "cancelada": "true"})
+    agenda_cancelada = get(publico, "/programacao")
+    check("Cancelada" in agenda_cancelada and atividade["sala"] not in agenda_cancelada and "Atividade salva." in painel,
+          "Cancelamento retira o link de sala")
     print("Fluxo concluído sem falhas.")
 
 

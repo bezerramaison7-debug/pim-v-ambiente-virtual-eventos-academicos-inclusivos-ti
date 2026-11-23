@@ -21,7 +21,8 @@ async function validar() {
                 assert.equal(semRotulo, false, path);
                 if (path === '/' && width === 320) {
                     await page.keyboard.press('Tab');
-                    assert.equal(await page.locator(':focus').innerText(), 'Pular para o conteúdo');
+                    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('href')), '#conteudo',
+                        await page.evaluate(() => document.activeElement?.outerHTML.slice(0, 200)));
                     await page.keyboard.press('Enter');
                     assert.equal(await page.locator(':focus').getAttribute('id'), 'conteudo');
                     await page.goto(base);

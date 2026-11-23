@@ -1,5 +1,5 @@
 name: Validação do Conecta TI
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 jobs:
   validacao:
     runs-on: ubuntu-latest
