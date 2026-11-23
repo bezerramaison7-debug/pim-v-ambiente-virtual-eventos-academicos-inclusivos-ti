@@ -1,0 +1,35 @@
+@model AreaModel
+@{ ViewData["Titulo"] = "Minha inscrição"; }
+<header class="page-head"><p class="eyebrow">Área do participante</p><h1>Olá, @Model.Pessoa.Nome</h1><p>Inscrição confirmada em @Model.Inscricao.CriadaEm.ToOffset(TimeSpan.FromHours(-3)).ToString("dd/MM/yyyy").</p></header>
+<div class="split">
+<section class="card">
+    <h2>Certificado</h2>
+    @if (Model.Certificado is not null)
+    {
+        <p>Seu certificado está disponível para impressão.</p>
+        <a class="button" href="/certificados?codigo=@Model.Certificado.Codigo">Abrir certificado</a>
+    }
+    else if (Model.Inscricao.Presente)
+    {
+        <p>Presença confirmada pela comissão.</p>
+        <form action="/participante/certificado" method="post" asp-antiforgery="true"><button type="submit" class="button">Emitir certificado</button></form>
+    }
+    else { <p>A emissão será liberada quando a comissão confirmar sua presença no evento.</p> }
+</section>
+<section class="card">
+    <h2>Fale com a comissão</h2>
+    <form action="/participante/mensagem" method="post" asp-antiforgery="true">
+        <label for="texto">Dúvida, solicitação de acessibilidade ou feedback</label>
+        <textarea id="texto" name="texto" rows="4" minlength="5" maxlength="600" required></textarea>
+        <button type="submit" class="button">Enviar mensagem</button>
+    </form>
+</section>
+</div>
+<section class="section">
+    <h2>Minhas mensagens</h2>
+    @if (Model.Mensagens.Length == 0) { <p>Você ainda não enviou mensagens.</p> }
+    @foreach (var m in Model.Mensagens)
+    {
+        <article class="notice"><h3>Mensagem enviada</h3><p>@m.Texto</p><p><strong>Comissão:</strong> @(m.Resposta ?? "Aguardando resposta.")</p></article>
+    }
+</section>

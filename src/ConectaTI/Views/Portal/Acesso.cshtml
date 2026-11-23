@@ -1,0 +1,11 @@
+@{ ViewData["Titulo"] = "Área do participante"; }
+<header class="page-head"><h1>Área do participante</h1><p>Consulte sua inscrição, fale com a comissão e emita seu certificado.</p></header>
+<section class="card form-card">
+    <h2>Acessar minha inscrição</h2>
+    <form method="post" action="/participante" asp-antiforgery="true">
+        <label for="email">E-mail da inscrição</label><input id="email" name="email" type="email" autocomplete="username" required maxlength="254">
+        <label for="chave">Chave de acesso</label><input id="chave" name="chave" type="password" required autocomplete="current-password" minlength="32" maxlength="32">
+        <button type="submit" class="button">Entrar</button>
+    </form>
+    <p><a href="/inscricao">Fazer uma inscrição</a></p>
+</section>

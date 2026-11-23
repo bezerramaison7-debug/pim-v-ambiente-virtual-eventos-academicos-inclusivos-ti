@@ -1,0 +1,91 @@
+@model GestaoModel
+@{ ViewData["Titulo"] = "Gestão do evento"; var a = Model.Edicao; }
+<header class="page-head"><p class="eyebrow">Comissão organizadora</p><h1>Gestão do evento</h1><p>@Model.Evento.Titulo · @Model.Evento.Periodo</p></header>
+<nav class="subnav" aria-label="Seções da gestão">
+    <a href="#inscricoes">Inscrições</a><a href="#agenda">Programação</a><a href="#avisos">Avisos</a>
+    <a href="#atendimento">Atendimento</a><a href="#evento">Evento</a><a href="#historico">Histórico</a>
+</nav>
+<section class="section" id="inscricoes">
+    <h2>Inscrições e presença</h2>
+    <form class="filter" action="/gestao#inscricoes" method="get">
+        <div><label for="busca">Nome do participante</label><input id="busca" name="busca" value="@Model.Busca"></div>
+        <button type="submit" class="button secondary">Buscar</button>
+    </form>
+    @if (Model.Inscricoes.Length == 0) { <p>Nenhuma inscrição encontrada.</p> }
+    @foreach (var item in Model.Inscricoes)
+    {
+        <article class="schedule admin-row"><div><h3>@item.Pessoa.Nome</h3><p>@item.Pessoa.Email</p></div>
+        @if (item.Inscricao.Presente) { <strong>Presença confirmada</strong> }
+        else
+        {
+            <form action="/gestao/presenca" method="post" asp-antiforgery="true">
+                <input type="hidden" name="id" value="@item.Pessoa.Id">
+                <button class="button secondary" type="submit" aria-label="Confirmar presença de @item.Pessoa.Nome">Confirmar presença</button>
+            </form>
+        }</article>
+    }
+</section>
+<section class="section" id="agenda">
+    <h2>Programação</h2>
+    <ul class="edit-list">
+        @foreach(var item in Model.Agenda) { <li><a href="/gestao?editar=@item.Id#agenda">@item.Titulo</a> · @item.Inicio.ToString("dd/MM HH:mm") @(item.Cancelada ? "· Cancelada" : "")</li> }
+    </ul>
+    <div class="card form-card">
+        <h3>@(a is null ? "Nova atividade" : "Editar atividade")</h3>
+        @if (a is not null) { <p><a href="/gestao#agenda">Criar outra atividade</a></p> }
+        <form action="/gestao/atividade" method="post" asp-antiforgery="true">
+            @if (a is not null) { <input type="hidden" name="id" value="@a.Id"> }
+            <label for="a-titulo">Título</label><input id="a-titulo" name="titulo" value="@a?.Titulo" required maxlength="100">
+            <label for="a-tipo">Formato</label><input id="a-tipo" name="tipo" value="@a?.Tipo" required maxlength="40">
+            <label for="palestrante">Convidado</label><input id="palestrante" name="palestrante" value="@a?.Palestrante" required maxlength="80">
+            <label for="inicio">Data e hora (Brasília)</label><input type="datetime-local" id="inicio" name="inicio" value="@a?.Inicio.ToString("yyyy-MM-ddTHH:mm")" required>
+            <label for="minutos">Duração em minutos</label><input type="number" id="minutos" name="minutos" min="15" max="480" value="@a?.Minutos" required>
+            <label for="descricao">Descrição</label><textarea id="descricao" name="descricao" required maxlength="500">@a?.Descricao</textarea>
+            <label for="acessibilidade">Recursos de acessibilidade</label><input id="acessibilidade" name="acessibilidade" value="@a?.Acessibilidade" required maxlength="160">
+            <label for="sala">Link HTTPS da sala (opcional)</label><input type="url" id="sala" name="sala" value="@a?.Sala" maxlength="500">
+            <label class="check"><input type="checkbox" name="cancelada" value="true" checked="@(a?.Cancelada == true)"> Atividade cancelada</label>
+            <button type="submit" class="button">Salvar atividade</button>
+        </form>
+    </div>
+</section>
+<section class="section" id="avisos">
+    <h2>Avisos públicos</h2>
+    <form class="card form-card" action="/gestao/aviso" method="post" asp-antiforgery="true">
+        <label for="aviso-tipo">Assunto do aviso</label><input id="aviso-tipo" name="tipo" required maxlength="40">
+        <label for="aviso-texto">Texto do aviso</label><textarea id="aviso-texto" name="texto" required maxlength="600"></textarea>
+        <button type="submit" class="button">Publicar aviso</button>
+    </form>
+</section>
+<section class="section" id="atendimento">
+    <h2>Atendimento e feedback</h2>
+    @if (Model.Mensagens.Length == 0) { <p>Nenhuma mensagem recebida.</p> }
+    @foreach (var m in Model.Mensagens)
+    {
+        <article class="notice"><h3>Mensagem de participante</h3><p>@m.Texto</p>
+        <form class="form-card" action="/gestao/resposta" method="post" asp-antiforgery="true">
+            <input type="hidden" name="id" value="@m.Id">
+            <label for="resposta-@m.Id">Resposta da comissão</label><textarea id="resposta-@m.Id" name="texto" required maxlength="600">@m.Resposta</textarea>
+            <button class="button secondary" type="submit">Salvar resposta</button>
+        </form></article>
+    }
+</section>
+<section class="section" id="evento">
+    <h2>Configuração do evento</h2>
+    <form class="card form-card" action="/gestao/evento" method="post" asp-antiforgery="true">
+        <label for="evento-titulo">Título do evento</label><input id="evento-titulo" name="titulo" value="@Model.Evento.Titulo" required maxlength="100">
+        <label for="periodo">Período exibido</label><input id="periodo" name="periodo" value="@Model.Evento.Periodo" required maxlength="100">
+        <label for="vagas">Capacidade</label><input type="number" id="vagas" name="vagas" value="@Model.Evento.Vagas" min="1" max="5000" required>
+        <label class="check"><input type="checkbox" name="abertas" value="true" checked="@Model.Evento.InscricoesAbertas"> Inscrições abertas</label>
+        <button type="submit" class="button">Salvar configuração</button>
+    </form>
+</section>
+<section class="section" id="historico">
+    <h2>Últimas operações</h2>
+    @if (Model.Auditoria.Length == 0) { <p>Nenhuma operação registrada.</p> }
+    <ul class="edit-list">
+        @foreach(var log in Model.Auditoria)
+        {
+            <li>@log.Data.ToOffset(TimeSpan.FromHours(-3)).ToString("dd/MM/yyyy HH:mm:ss") · @log.Acao</li>
+        }
+    </ul>
+</section>

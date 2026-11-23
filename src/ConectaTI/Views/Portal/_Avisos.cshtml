@@ -1,0 +1,10 @@
+@model Aviso[]
+<section class="section">
+    <h2>Avisos do evento</h2>
+    @if (Model.Length == 0) { <p>Nenhum aviso publicado.</p> }
+    @foreach (var aviso in Model)
+    {
+        <article class="notice"><h3>@aviso.Tipo</h3><p>@aviso.Texto</p>
+        <small>@aviso.PublicadoEm.ToOffset(TimeSpan.FromHours(-3)).ToString("dd/MM/yyyy · HH:mm") (Brasília)</small></article>
+    }
+</section>

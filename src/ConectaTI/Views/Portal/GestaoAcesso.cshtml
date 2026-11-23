@@ -1,0 +1,8 @@
+@{ ViewData["Titulo"] = "Comissão organizadora"; }
+<header class="page-head"><h1>Comissão organizadora</h1></header>
+<section class="card form-card"><h2>Acesso administrativo</h2>
+    <form method="post" action="/gestao/acesso" asp-antiforgery="true">
+        <label for="senha">Senha da comissão</label><input id="senha" name="senha" type="password" autocomplete="current-password" maxlength="256" required>
+        <button type="submit" class="button">Entrar na gestão</button>
+    </form>
+</section>

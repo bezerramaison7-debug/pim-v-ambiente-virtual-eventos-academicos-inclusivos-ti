@@ -1,0 +1,23 @@
+@model ConsultaModel
+@{ ViewData["Titulo"] = "Certificados"; }
+<header class="page-head no-print"><h1>Certificados</h1><p>Use o código de verificação do certificado. Para emitir o seu, acesse a área do participante.</p></header>
+<form class="filter no-print" action="/certificados" method="get">
+    <div><label for="codigo">Código de verificação</label><input id="codigo" name="codigo" value="@Model.Codigo" maxlength="24" required></div>
+    <button type="submit" class="button">Verificar</button>
+</form>
+@if (Model.Codigo is not null && Model.Certificado is null)
+{
+    <p class="flash error" role="status">Certificado não localizado. Confira o código informado.</p>
+}
+@if (Model.Certificado is { } c)
+{
+    <article class="certificate">
+        <p class="eyebrow">Conecta TI · Evento acadêmico demonstrativo</p>
+        <h2>Certificado de participação</h2>
+        <p>Certificamos a participação de</p><p class="cert-name">@c.Nome</p>
+        <p>no evento <strong>@c.Evento</strong>, realizado em @c.Periodo, com carga horária programada de @(c.Minutos / 60)h @(c.Minutos % 60)min.</p>
+        <p>Emitido em @c.EmitidoEm.ToOffset(TimeSpan.FromHours(-3)).ToString("dd/MM/yyyy").</p>
+        <p>Código de verificação <code>@c.Codigo</code></p>
+    </article>
+    <p class="note no-print">Use Ctrl+P (ou Cmd+P no Mac) para imprimir o certificado ou salvar em PDF.</p>
+}

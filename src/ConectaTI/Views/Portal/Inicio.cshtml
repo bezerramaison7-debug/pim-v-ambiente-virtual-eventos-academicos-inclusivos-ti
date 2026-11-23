@@ -1,0 +1,37 @@
+@model InicioModel
+@{ ViewData["Titulo"] = "Encontro acadêmico de tecnologia"; }
+<section class="hero">
+    <div class="hero-copy">
+        <p class="eyebrow">Encontro acadêmico online · Edição demonstrativa</p>
+        <h1>@Model.Evento.Titulo<span>.</span></h1>
+        <p class="hero-line">Tecnologia para<br> todas as pessoas.</p>
+        <p class="lead">Dois dias de oficinas e conversas sobre desenvolvimento de software e acessibilidade digital.</p>
+        <p class="event-date">@Model.Evento.Periodo · Horário de Brasília</p>
+        <div class="actions">
+            <a class="button" href="/inscricao">@(Model.Evento.InscricoesAbertas && Model.Vagas > 0 ? "Fazer inscrição" : "Consultar inscrições") <span aria-hidden="true">↗</span></a>
+            <a class="button on-dark" href="/programacao">Ver programação</a>
+        </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="art-center">&lt;/&gt;</div>
+    </div>
+</section>
+<div class="facts">
+    <span><strong>@Model.Atividades.Count(a => !a.Cancelada)</strong> atividades na agenda</span>
+    <span><strong>100%</strong> online</span>
+    <a href="/libras"><strong>Libras</strong> e recursos de acesso <span aria-hidden="true">↗</span></a>
+</div>
+<section class="section">
+    <div class="section-head"><h2>Em destaque</h2><a href="/programacao">Programação completa <span aria-hidden="true">→</span></a></div>
+    <div class="cards">
+    @foreach (var atividade in Model.Atividades.Where(a => !a.Cancelada).Take(3))
+    {
+        <article class="card">
+            <p class="eyebrow">@atividade.Tipo · @atividade.Inicio.ToString("dd/MM · HH:mm")</p>
+            <h3>@atividade.Titulo</h3><p>@atividade.Descricao</p>
+        </article>
+    }
+    </div>
+</section>
+<partial name="_Avisos" model="Model.Avisos" />

@@ -1,0 +1,8 @@
+@model string
+@{ ViewData["Titulo"] = "Inscrição confirmada"; }
+<header class="page-head"><p class="eyebrow">Inscrição</p><h1>Inscrição confirmada</h1></header>
+<section class="card form-card">
+    <h2>Guarde sua chave de acesso</h2><p>Use esta chave e seu e-mail para entrar novamente na área do participante. Ela é exibida uma vez.</p>
+    <p class="key"><code>@Model</code></p>
+    <a class="button" href="/participante">Ir para minha área</a>
+</section>

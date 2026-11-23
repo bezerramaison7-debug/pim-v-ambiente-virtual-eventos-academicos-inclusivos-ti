@@ -1,0 +1,29 @@
+@model AgendaModel
+@{ ViewData["Titulo"] = "Programação"; }
+<header class="page-head"><p class="eyebrow">Encontro acadêmico online</p><h1>Programação</h1><p>Horários de Brasília (UTC−3). Confira o formato e os recursos previstos em cada atividade.</p></header>
+<form class="filter" action="/programacao" method="get">
+    <div><label for="tipo">Formato da atividade</label><select id="tipo" name="tipo"><option value="">Todos</option>
+        @foreach (var tipo in Model.Tipos)
+        {
+            <option value="@tipo" selected="@(tipo == Model.Filtro)">@tipo</option>
+        }
+    </select></div><button class="button secondary" type="submit">Filtrar</button>
+</form>
+@if (Model.Atividades.Length == 0) { <p>Nenhuma atividade para o filtro selecionado.</p> }
+@foreach (var dia in Model.Atividades.GroupBy(a => a.Inicio.Date))
+{
+    <section class="section">
+    <h2>@dia.Key.ToString("dd 'de' MMMM")</h2>
+    @foreach (var a in dia)
+    {
+        <article class="schedule">
+            <p class="schedule-time"><time datetime="@a.Inicio.ToString("yyyy-MM-ddTHH:mm")">@a.Inicio.ToString("HH:mm")</time><small>@a.Minutos min</small></p>
+            <div><p class="eyebrow">@a.Tipo @if (a.Cancelada) { <span class="status-cancel">· Cancelada</span> }</p>
+            <h3>@a.Titulo</h3><p>@a.Palestrante · @a.Descricao</p><small>@a.Acessibilidade</small>
+            @if (!a.Cancelada && !string.IsNullOrEmpty(a.Sala)) { <p><a href="@a.Sala">Abrir sala de @a.Titulo</a></p> }
+            </div>
+        </article>
+    }
+    </section>
+}
+<partial name="_Avisos" model="Model.Avisos" />

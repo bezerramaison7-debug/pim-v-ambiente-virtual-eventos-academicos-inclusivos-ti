@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Titulo"] | Conecta TI</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="top">
+    <div class="wrap top-inner">
+        <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">C</span> Conecta <strong>TI</strong></a>
+        <nav aria-label="Navegação principal">
+            <a href="/programacao" aria-current="@(Context.Request.Path == "/programacao" ? "page" : null)">Programação</a>
+            <a href="/libras" aria-current="@(Context.Request.Path == "/libras" ? "page" : null)">Libras</a>
+            <a href="/certificados" aria-current="@(Context.Request.Path == "/certificados" ? "page" : null)">Certificados</a>
+        </nav>
+        <a class="button secondary compact" href="/participante">Área do participante</a>
+    </div>
+</header>
+<main id="conteudo" class="wrap" tabindex="-1">
+    @if ((ViewData["Erro"] ?? TempData["Erro"]) is string erro)
+    {
+        <p class="flash error" role="alert">@erro</p>
+    }
+    @if (TempData["Sucesso"] is string sucesso)
+    {
+        <p class="flash" role="status">@sucesso</p>
+    }
+    @RenderBody()
+</main>
+<footer class="footer">
+    <div class="wrap footer-inner">
+        <span><strong>Conecta TI</strong> · Projeto Integrado Multidisciplinar V</span>
+        <a href="/gestao">Comissão organizadora</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form action="/sair" method="post" asp-antiforgery="true"><button class="link" type="submit">Sair</button></form>
+        }
+    </div>
+</footer>
+</body>
+</html>

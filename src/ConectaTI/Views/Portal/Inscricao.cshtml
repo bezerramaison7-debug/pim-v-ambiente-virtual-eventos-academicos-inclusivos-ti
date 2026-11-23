@@ -1,0 +1,20 @@
+@model InscricaoModel
+@{ ViewData["Titulo"] = "Inscrição"; }
+<header class="page-head"><p class="eyebrow">@Model.Evento.Titulo</p><h1>Inscrição</h1><p>@Model.Evento.Periodo · Online e gratuito</p></header>
+<section class="card form-card">
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <h2>Sua sessão está ativa</h2><a class="button" href="/participante">Acessar minha área</a>
+}
+else if (Model.Evento.InscricoesAbertas && Model.Vagas > 0)
+{
+    <h2>Garanta sua vaga</h2><p>@Model.Vagas vagas disponíveis. A confirmação será exibida após o envio.</p>
+    <form action="/inscricao" method="post" asp-antiforgery="true">
+        <label for="nome">Nome para o certificado</label><input id="nome" name="nome" value="@Model.Nome" autocomplete="name" maxlength="100" required>
+        <label for="email">E-mail</label><input type="email" id="email" name="email" value="@Model.Email" autocomplete="email" maxlength="254" required>
+        <p class="note">Use dados fictícios nesta demonstração. A chave de acesso será mostrada na próxima tela.</p>
+        <button class="button" type="submit">Confirmar inscrição</button>
+    </form>
+}
+else { <h2>Inscrições indisponíveis</h2><p>Confira os avisos na programação para acompanhar a situação.</p><a href="/programacao">Ver programação</a> }
+</section>
